@@ -1,0 +1,8 @@
+echo "# ubuntu-setup" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/dixitm20/ubuntu-setup.git
+#  Store Repo Credentials Locally To Avoid Entering Password In Each Push
+git config credential.helper store
+git push -u origin master
