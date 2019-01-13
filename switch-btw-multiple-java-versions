@@ -1,0 +1,18 @@
+# ADD BELOW CODE TO THE .bashrc FILE
+# REFERENCE FOR THE BELOW CODE TAKEN FROM STACK OVERFLOW
+
+# added by Manish to switch between multiple java versions
+# >>> java versions switch init >>>
+# ref command to install java versions:
+#   > sudo apt-get update
+#   > sudo apt-get install default-jdk
+#   > sudo apt-get install openjdk-11-jdk
+#   > sudo apt-get install openjdk-8-jdk
+
+alias lsjava='sudo update-java-alternatives --list'
+
+alias usejava8='sudo update-java-alternatives --set /usr/lib/jvm/java-1.8.0-openjdk-amd64 && source ~/.bashrc'
+alias usejava11='sudo update-java-alternatives --set /usr/lib/jvm/java-1.11.0-openjdk-amd64 && source ~/.bashrc'
+
+export JAVA_HOME="$(jrunscript -e "java.lang.System.out.println(java.lang.System.getProperty('java.home'));")"
+# <<< java versions switch init <<<
