@@ -1,2 +1,10 @@
 # To auto populate the conda env list in the jupyter notebook install the below package in each conda environment
 conda install nb_conda
+
+
+# This will create a file named “jupyter_notebook_config.py” in your user folder.
+# Open this file and search for “#c.NotebookApp.notebook_dir = ‘‘
+# Do not forget to remove the # symbol to uncomment and insert the path to your notebooks folder,
+# using forward slashes, e.g. /home/dixitm/jupyter-workspace
+# For windows use - D:/MyFiles/Notebooks/Python
+jupyter notebook --generate-config
