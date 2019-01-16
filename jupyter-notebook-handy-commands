@@ -1,5 +1,6 @@
 # To auto populate the conda env list in the jupyter notebook install the below package in each conda environment
-conda install nb_conda
+# conda install nb_conda
+conda install -c anaconda nb_conda
 
 
 # This will create a file named “jupyter_notebook_config.py” in your user folder.
