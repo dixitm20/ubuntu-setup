@@ -133,6 +133,7 @@ unset __conda_setup
 # <<< conda init <<<
 
 
+
 # added by Manish to switch between multiple java versions
 # >>> java versions switch init >>>
 # ref command to install java versions:
@@ -158,19 +159,19 @@ function add2PATH {
 function add2PYTHONPATH {
   case ":$PYTHONPATH:" in
     *":$1:"*) :;; # already there
-    *) PATH="$1:$PYTHONPATH";; # or PATH="$PATH:$1"
+    *) PYTHONPATH="$1:$PYTHONPATH";; # or PYTHONPATH="$PYTHONPATH:$1"
   esac
 }
 
-export SPARK_HOME="/opt/spark"
+export SPARK_HOME="/usr/bin/spark"
 export PYSPARK_DRIVER_PYTHON="jupyter"
 export PYSPARK_DRIVER_PYTHON_OPTS="notebook"
 export PYSPARK_PYTHON=python3
 
-if [[ $PYTHONPATH == "" ]]; then
-  export PYTHONPATH="$SPARK_HOME/python"
+if [[ "$PYTHONPATH" == "" ]]; then
+  export PYTHONPATH="$SPARK_HOME/python:$SPARK_HOME/python/build:$SPARK_HOME/python/lib/py4j-0.10.1-src.zip"
 else
-  add2PYTHONPATH "$SPARK_HOME/python"
+  add2PYTHONPATH "$SPARK_HOME/python:$SPARK_HOME/python/build:$SPARK_HOME/python/lib/py4j-0.10.1-src.zip"
 fi
 
 add2PATH "$SPARK_HOME:$SPARK_HOME/bin:$PYTHONPATH"
