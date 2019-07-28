@@ -115,63 +115,53 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-# added by Anaconda3 2018.12 installer
+
+# >>> my alias init >>>
+alias myhome='cd /mnt/c/Users/Manish'
+alias mywrk='cd /mnt/c/Users/Manish/my-workspace'
+# >>> my alias init >>>
+
+
+# >>> my export init >>>
+if [[ ${SPARK_HOME+X} ]]; then
+    __spark_pythondir="${SPARK_HOME}/python"
+    __spark_py4jfile="${SPARK_HOME}/python/lib/$(ls "${SPARK_HOME}/python/lib" | grep 'py4j.*zip' | tail -l)"
+    __spark_pysparkfile="${SPARK_HOME}/python/lib/$(ls "${SPARK_HOME}/python/lib" | grep 'pyspark.*zip' | tail -l)"
+    __spark_path_list="${__spark_pythondir}:${__spark_py4jfile}:${__spark_pysparkfile}"
+    
+    [[ "${PYTHONPATH:-NA}" == "NA" ]] && PYTHONPATH="$(which python)"
+    [[ ":${PYTHONPATH}:" != *":${__spark_path_list}:"* ]] && PYTHONPATH="${__spark_path_list}:${PYTHONPATH}"
+    export PYTHONPATH
+    # export PYSPARK_DRIVER_PYTHON="jupyter"
+    # export PYSPARK_DRIVER_PYTHON_OPTS="notebook"
+    # export PYSPARK_PYTHON=python3
+
+    unset __spark_pythondir
+    unset __spark_py4jfile
+    unset __spark_pysparkfile
+    unset __spark_path_list
+fi
+# >>> my export init >>>
+
+
 # >>> conda init >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$(CONDA_REPORT_ERRORS=false '/home/dixitm/anaconda3/bin/conda' shell.bash hook 2> /dev/null)"
+__conda_setup="$('/home/dixitm/anaconda3/bin/conda' shell.bash hook 2> /dev/null)"
 if [ $? -eq 0 ]; then
-    \eval "$__conda_setup"
+    eval "$__conda_setup"
 else
     if [ -f "/home/dixitm/anaconda3/etc/profile.d/conda.sh" ]; then
         . "/home/dixitm/anaconda3/etc/profile.d/conda.sh"
-        CONDA_CHANGEPS1=false conda activate base
     else
-        \export PATH="/home/dixitm/anaconda3/bin:$PATH"
+        export PATH="/home/dixitm/anaconda3/bin:$PATH"
     fi
 fi
 unset __conda_setup
 # <<< conda init <<<
 
 
-
-# added by Manish to switch between multiple java versions
-# >>> java versions switch init >>>
-# ref command to install java versions:
-#   > sudo apt-get update
-#   > sudo apt-get install default-jdk
-#   > sudo apt-get install openjdk-11-jdk
-#   > sudo apt-get install openjdk-8-jdk
-
-alias lsjava='sudo update-java-alternatives --list'
-alias usejava8='sudo update-java-alternatives --set /usr/lib/jvm/java-1.8.0-openjdk-amd64 && source ~/.bashrc'
-alias usejava11='sudo update-java-alternatives --set /usr/lib/jvm/java-1.11.0-openjdk-amd64 && source ~/.bashrc'
-
-export JAVA_HOME="$(jrunscript -e "java.lang.System.out.println(java.lang.System.getProperty('java.home'));")"
-# <<< java versions switch init <<<
-
-function add2PATH {
-  case ":$PATH:" in
-    *":$1:"*) :;; # already there
-    *) PATH="$1:$PATH";; # or PATH="$PATH:$1"
-  esac
-}
-
-function add2PYTHONPATH {
-  case ":$PYTHONPATH:" in
-    *":$1:"*) :;; # already there
-    *) PYTHONPATH="$1:$PYTHONPATH";; # or PYTHONPATH="$PYTHONPATH:$1"
-  esac
-}
-
-export SPARK_HOME="/usr/bin/spark"
-export PYSPARK_DRIVER_PYTHON="jupyter"
-export PYSPARK_DRIVER_PYTHON_OPTS="notebook"
-export PYSPARK_PYTHON=python3
-
-if [[ "$PYTHONPATH" == "" ]]; then
-  export PYTHONPATH="$SPARK_HOME/python:$SPARK_HOME/python/build:$SPARK_HOME/python/lib/py4j-0.10.1-src.zip"
-else
-  add2PYTHONPATH "$SPARK_HOME/python:$SPARK_HOME/python/build:$SPARK_HOME/python/lib/py4j-0.10.1-src.zip"
-fi
-
-add2PATH "$SPARK_HOME:$SPARK_HOME/bin:$PYTHONPATH"
+# >>> sdkman init >>>
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/home/dixitm/.sdkman"
+[[ -s "/home/dixitm/.sdkman/bin/sdkman-init.sh" ]] && source "/home/dixitm/.sdkman/bin/sdkman-init.sh"
+# <<< sdkman init <<<
