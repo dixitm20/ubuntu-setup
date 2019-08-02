@@ -116,12 +116,6 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# >>> my alias init >>>
-alias myhome='cd /mnt/c/Users/Manish'
-alias mywrk='cd /mnt/c/Users/Manish/my-workspace'
-# >>> my alias init >>>
-
-
 # >>> my export init >>>
 if [[ ${SPARK_HOME+X} ]]; then
     __spark_pythondir="${SPARK_HOME}/python"
@@ -141,8 +135,27 @@ if [[ ${SPARK_HOME+X} ]]; then
     unset __spark_pysparkfile
     unset __spark_path_list
 fi
-# >>> my export init >>>
 
+export myhome='/home/dixitm'
+export mywrk='/home/dixitm/my-workspace'
+
+export ZEPPELIN_HOME="/home/dixitm/tools/zeppelin/current"
+export ZEPPELIN_PORT='8099'
+[[ ":${PATH}:" != *":${ZEPPELIN_HOME}/bin:"* ]] && export PATH="${ZEPPELIN_HOME}/bin:${PATH}"
+# <<< my export init <<<
+
+# >>> my alias init >>>
+alias myhome='cd /home/dixitm'
+alias mywrk='cd /home/dixitm/my-workspace'
+
+alias zepstart='zeppelin-daemon.sh start'
+alias zepstop='zeppelin-daemon.sh stop'
+alias zepstatus='zeppelin-daemon.sh status'
+
+alias cdi='code-insiders .'
+alias jpn='juyter notebook'
+alias jpl='jupyter lab'
+# <<< my alias init <<<
 
 # >>> conda init >>>
 # !! Contents within this block are managed by 'conda init' !!
