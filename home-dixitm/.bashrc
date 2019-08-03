@@ -125,7 +125,6 @@ export wsliam="Manish"
 
 # for UNIX/LINUX machine below can be used
 # export myhome="/home/${iam}"
-
 # for WSL something like below will be used
 export myhome="/mnt/c/Users/${wsliam}"
 
