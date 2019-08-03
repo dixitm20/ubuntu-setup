@@ -119,7 +119,9 @@ fi
 
 # >>> my export init >>>
 export myhome='/home/dixitm'
-export mywrk='/home/dixitm/my-workspace'
+# for WSL something like below will be used
+#export myhome='/mnt/c/Users/Manish'
+export mywrk="${myhome}/my-workspace"
 
 export ZEPPELIN_HOME="/home/dixitm/tools/zeppelin/current"
 export ZEPPELIN_PORT='8099'
