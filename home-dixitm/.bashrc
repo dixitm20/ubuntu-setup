@@ -120,6 +120,7 @@ fi
 # >>> my export init >>>
 export iam="$(whoami)"
 # export wsliam="$(whoami)"
+# In case your user directory name under : C:/Users has different name than WSL username
 export wsliam="Manish"
 
 # for UNIX/LINUX machine below can be used
