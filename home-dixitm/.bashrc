@@ -118,14 +118,25 @@ fi
 
 
 # >>> my export init >>>
-export myhome='/home/dixitm'
-# for WSL something like below will be used
-#export myhome='/mnt/c/Users/Manish'
-export mywrk="${myhome}/my-workspace"
+export iam="$(whoami)"
+# export wsliam="$(whoami)"
+export wsliam="Manish"
 
-export ZEPPELIN_HOME="/home/dixitm/tools/zeppelin/current"
+# for UNIX/LINUX machine below can be used
+# export myhome="/home/${iam}"
+
+# for WSL something like below will be used
+export myhome="/mnt/c/Users/${wsliam}"
+
+export mywrk="${myhome}/my-workspace"
+[[ -d "${mywrk}" ]] || mkdir "${mywrk}"
+
+export ZEPPELIN_HOME="/home/${iam}/tools/zeppelin/current"
 export ZEPPELIN_PORT='8099'
 [[ ":${PATH}:" != *":${ZEPPELIN_HOME}/bin:"* ]] && export PATH="${ZEPPELIN_HOME}/bin:${PATH}"
+
+export CONDA_HOME="/home/${iam}/anaconda3"
+[[ ":${PATH}:" != *":${CONDA_HOME}/bin:"* ]] && export PATH="${CONDA_HOME}/bin:${PATH}"
 
 export TERM=xterm-256color
 # <<< my export init <<<
@@ -141,32 +152,30 @@ alias zepstatus='zeppelin-daemon.sh status'
 
 alias cdi='code-insiders .'
 
-alias jpn='juyter notebook'
+alias jpn='jupyter notebook'
 alias jpl='jupyter lab'
 # <<< my alias init <<<
 
 
 # >>> conda init >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/dixitm/anaconda3/bin/conda' shell.bash hook 2> /dev/null)"
+__conda_setup="$("/home/${iam}/anaconda3/bin/conda" shell.bash hook 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/home/dixitm/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/dixitm/anaconda3/etc/profile.d/conda.sh"
+    if [ -f "/home/${iam}/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/${iam}/anaconda3/etc/profile.d/conda.sh"
     else
-        export PATH="/home/dixitm/anaconda3/bin:$PATH"
+        export PATH="/home/${iam}/anaconda3/bin:$PATH"
     fi
 fi
 unset __conda_setup
 # <<< conda init <<<
 
 
-# >>> sdkman init >>>
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/home/dixitm/.sdkman"
-[[ -s "/home/dixitm/.sdkman/bin/sdkman-init.sh" ]] && source "/home/dixitm/.sdkman/bin/sdkman-init.sh"
-# <<< sdkman init <<<
+export SDKMAN_DIR="/home/${iam}/.sdkman"
+[[ -s "/home/${iam}/.sdkman/bin/sdkman-init.sh" ]] && source "/home/${iam}/.sdkman/bin/sdkman-init.sh"
 
 
 # >>> my spark init >>>
@@ -189,3 +198,4 @@ if [[ ${SPARK_HOME+X} ]]; then
     unset __spark_path_list
 fi
 # <<< my spark init <<<
+
