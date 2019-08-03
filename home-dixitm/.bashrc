@@ -153,6 +153,7 @@ alias zepstop='zeppelin-daemon.sh stop'
 alias zepstatus='zeppelin-daemon.sh status'
 
 alias cdi='code-insiders .'
+
 alias jpn='juyter notebook'
 alias jpl='jupyter lab'
 # <<< my alias init <<<
