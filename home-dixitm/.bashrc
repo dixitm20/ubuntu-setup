@@ -124,6 +124,8 @@ export mywrk='/home/dixitm/my-workspace'
 export ZEPPELIN_HOME="/home/dixitm/tools/zeppelin/current"
 export ZEPPELIN_PORT='8099'
 [[ ":${PATH}:" != *":${ZEPPELIN_HOME}/bin:"* ]] && export PATH="${ZEPPELIN_HOME}/bin:${PATH}"
+
+export TERM=xterm-256color
 # <<< my export init <<<
 
 
