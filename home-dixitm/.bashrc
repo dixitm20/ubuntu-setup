@@ -145,8 +145,8 @@ export ZEPPELIN_PORT='8099'
 # <<< my export init <<<
 
 # >>> my alias init >>>
-alias myhome='cd /home/dixitm'
-alias mywrk='cd /home/dixitm/my-workspace'
+alias myhome="cd ${myhome}"
+alias mywrk="cd ${mywrk}"
 
 alias zepstart='zeppelin-daemon.sh start'
 alias zepstop='zeppelin-daemon.sh stop'
