@@ -116,26 +116,8 @@ if ! shopt -oq posix; then
   fi
 fi
 
+
 # >>> my export init >>>
-if [[ ${SPARK_HOME+X} ]]; then
-    __spark_pythondir="${SPARK_HOME}/python"
-    __spark_py4jfile="${SPARK_HOME}/python/lib/$(ls "${SPARK_HOME}/python/lib" | grep 'py4j.*zip' | tail -l)"
-    __spark_pysparkfile="${SPARK_HOME}/python/lib/$(ls "${SPARK_HOME}/python/lib" | grep 'pyspark.*zip' | tail -l)"
-    __spark_path_list="${__spark_pythondir}:${__spark_py4jfile}:${__spark_pysparkfile}"
-    
-    [[ "${PYTHONPATH:-NA}" == "NA" ]] && PYTHONPATH="$(which python)"
-    [[ ":${PYTHONPATH}:" != *":${__spark_path_list}:"* ]] && PYTHONPATH="${__spark_path_list}:${PYTHONPATH}"
-    export PYTHONPATH
-    # export PYSPARK_DRIVER_PYTHON="jupyter"
-    # export PYSPARK_DRIVER_PYTHON_OPTS="notebook"
-    # export PYSPARK_PYTHON=python3
-
-    unset __spark_pythondir
-    unset __spark_py4jfile
-    unset __spark_pysparkfile
-    unset __spark_path_list
-fi
-
 export myhome='/home/dixitm'
 export mywrk='/home/dixitm/my-workspace'
 
@@ -143,6 +125,7 @@ export ZEPPELIN_HOME="/home/dixitm/tools/zeppelin/current"
 export ZEPPELIN_PORT='8099'
 [[ ":${PATH}:" != *":${ZEPPELIN_HOME}/bin:"* ]] && export PATH="${ZEPPELIN_HOME}/bin:${PATH}"
 # <<< my export init <<<
+
 
 # >>> my alias init >>>
 alias myhome="cd ${myhome}"
@@ -157,6 +140,7 @@ alias cdi='code-insiders .'
 alias jpn='juyter notebook'
 alias jpl='jupyter lab'
 # <<< my alias init <<<
+
 
 # >>> conda init >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -179,3 +163,25 @@ unset __conda_setup
 export SDKMAN_DIR="/home/dixitm/.sdkman"
 [[ -s "/home/dixitm/.sdkman/bin/sdkman-init.sh" ]] && source "/home/dixitm/.sdkman/bin/sdkman-init.sh"
 # <<< sdkman init <<<
+
+
+# >>> my spark init >>>
+if [[ ${SPARK_HOME+X} ]]; then
+    __spark_pythondir="${SPARK_HOME}/python"
+    __spark_py4jfile="${SPARK_HOME}/python/lib/$(ls "${SPARK_HOME}/python/lib" | grep 'py4j.*zip' | tail -l)"
+    __spark_pysparkfile="${SPARK_HOME}/python/lib/$(ls "${SPARK_HOME}/python/lib" | grep 'pyspark.*zip' | tail -l)"
+    __spark_path_list="${__spark_pythondir}:${__spark_py4jfile}:${__spark_pysparkfile}"
+    
+    [[ "${PYTHONPATH:-NA}" == "NA" ]] && PYTHONPATH="$(which python)"
+    [[ ":${PYTHONPATH}:" != *":${__spark_path_list}:"* ]] && PYTHONPATH="${__spark_path_list}:${PYTHONPATH}"
+    export PYTHONPATH
+    # export PYSPARK_DRIVER_PYTHON="jupyter"
+    # export PYSPARK_DRIVER_PYTHON_OPTS="notebook"
+    # export PYSPARK_PYTHON=python3
+
+    unset __spark_pythondir
+    unset __spark_py4jfile
+    unset __spark_pysparkfile
+    unset __spark_path_list
+fi
+# <<< my spark init <<<
