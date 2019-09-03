@@ -118,84 +118,141 @@ fi
 
 
 # >>> my export init >>>
-export iam="$(whoami)"
-# export wsliam="$(whoami)"
-# In case your user directory name under : C:/Users has different name than WSL username
-export wsliam="Manish"
 
-# for UNIX/LINUX machine below can be used
-# export myhome="/home/${iam}"
-# for WSL something like below will be used
-export myhome="/mnt/c/Users/${wsliam}"
+    export iam="$(whoami)"
+    # export wsliam="$(whoami)"
+    # In case your user directory name under : C:/Users has different name than WSL username
+    export wsliam="Manish"
 
-export mywrk="${myhome}/my-workspace"
-[[ -d "${mywrk}" ]] || mkdir "${mywrk}"
+    # for UNIX/LINUX machine below can be used
+    # export myhome="/home/${iam}"
+    # for WSL something like below will be used
+    export myhome="/mnt/c/Users/${wsliam}"
 
-export ZEPPELIN_HOME="/home/${iam}/tools/zeppelin/current"
-export ZEPPELIN_PORT='8099'
-[[ ":${PATH}:" != *":${ZEPPELIN_HOME}/bin:"* ]] && export PATH="${ZEPPELIN_HOME}/bin:${PATH}"
+    export mywrk="${myhome}/my-workspace"
+    [[ -d "${mywrk}" ]] || mkdir "${mywrk}"
 
-export CONDA_HOME="/home/${iam}/anaconda3"
-[[ ":${PATH}:" != *":${CONDA_HOME}/bin:"* ]] && export PATH="${CONDA_HOME}/bin:${PATH}"
+    export ZEPPELIN_HOME="/home/${iam}/tools/zeppelin/current"
+    export ZEPPELIN_PORT='8099'
+    [[ ":${PATH}:" != *":${ZEPPELIN_HOME}/bin:"* ]] && export PATH="${ZEPPELIN_HOME}/bin:${PATH}"
 
-export TERM=xterm-256color
+    export CONDA_HOME="/home/${iam}/anaconda3"
+    [[ ":${PATH}:" != *":${CONDA_HOME}/bin:"* ]] && export PATH="${CONDA_HOME}/bin:${PATH}"
+    
+    # >>> wsl.conf init >>>
+        # -------------------------------------------------------------------------------------------
+        # ADD BELOW LINES(del # > from below lines and the copy) TO FILE: "/etc/wsl.conf" 
+        #                       FOR STOPPING WINDOWS PATH LIST BEING APPENDED TO WSL PATH VARIABLE:
+        # -------------------------------------------------------------------------------------------
+        # ># Ref Page Url: https://docs.microsoft.com/en-us/windows/wsl/wsl-config
+        # >[interop]
+        # ># enabled = true
+        # >appendWindowsPath = false
+
+        # Below variables of this section (until : # <<< wsl.conf init <<<) are needed only in WSL
+        # Without below PATH appends the command such as code,conde-insiders will not work
+        export VSCODE_HOME="/mnt/c/Program Files/Microsoft VS Code"
+        [[ ":${PATH}:" != *":${VSCODE_HOME}/bin:"* ]] && export PATH="${PATH}:${VSCODE_HOME}/bin"
+
+        export VSCODE_INSIDERS_HOME="/mnt/c/Program Files/Microsoft VS Code Insiders"
+        [[ ":${PATH}:" != *":${VSCODE_INSIDERS_HOME}/bin:"* ]] && export PATH="${PATH}:${VSCODE_INSIDERS_HOME}/bin"
+
+        __WINDOWS_IMPORTANT_APPEND_PATH_LIST="/mnt/c/Windows:/mnt/c/Windows/System32:/mnt/c/Users/Manish/AppData/Local/Microsoft/WindowsApps"
+        [[ ":${PATH}:" != *":${__WINDOWS_IMPORTANT_APPEND_PATH_LIST}:"* ]] && export PATH="${PATH}:${__WINDOWS_IMPORTANT_APPEND_PATH_LIST}"
+        unset __WINDOWS_IMPORTANT_APPEND_PATH_LIST
+    # <<< wsl.conf init <<<
+
+    export TERM=xterm-256color
+
 # <<< my export init <<<
 
 
 # >>> my alias init >>>
-alias myhome="cd ${myhome}"
-alias mywrk="cd ${mywrk}"
 
-alias zepstart='zeppelin-daemon.sh start'
-alias zepstop='zeppelin-daemon.sh stop'
-alias zepstatus='zeppelin-daemon.sh status'
+    alias myhome="cd ${myhome}"
+    alias mywrk="cd ${mywrk}"
 
-alias cdi='code-insiders .'
+    alias zepstart='zeppelin-daemon.sh start'
+    alias zepstop='zeppelin-daemon.sh stop'
+    alias zepstatus='zeppelin-daemon.sh status'
 
-alias jpn='jupyter notebook'
-alias jpl='jupyter lab'
+    alias cdi='code-insiders .'
+
+    alias jpn='jupyter notebook'
+    alias jpl='jupyter lab'
+
 # <<< my alias init <<<
 
 
 # >>> conda init >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$("/home/${iam}/anaconda3/bin/conda" shell.bash hook 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/${iam}/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/${iam}/anaconda3/etc/profile.d/conda.sh"
+
+    # !! Contents within this block are managed by 'conda init' !!
+    __conda_setup="$("/home/${iam}/anaconda3/bin/conda" shell.bash hook 2> /dev/null)"
+    if [ $? -eq 0 ]; then
+        eval "$__conda_setup"
     else
-        export PATH="/home/${iam}/anaconda3/bin:$PATH"
+        if [ -f "/home/${iam}/anaconda3/etc/profile.d/conda.sh" ]; then
+            . "/home/${iam}/anaconda3/etc/profile.d/conda.sh"
+        else
+            export PATH="/home/${iam}/anaconda3/bin:$PATH"
+        fi
     fi
-fi
-unset __conda_setup
+    unset __conda_setup
+
 # <<< conda init <<<
 
 
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/home/${iam}/.sdkman"
-[[ -s "/home/${iam}/.sdkman/bin/sdkman-init.sh" ]] && source "/home/${iam}/.sdkman/bin/sdkman-init.sh"
+# >>> sdkman init >>>
+
+    # THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+    export SDKMAN_DIR="/home/${iam}/.sdkman"
+    [[ -s "/home/${iam}/.sdkman/bin/sdkman-init.sh" ]] && source "/home/${iam}/.sdkman/bin/sdkman-init.sh"
+
+# <<< sdkman init <<<
 
 
 # >>> my spark init >>>
-if [[ ${SPARK_HOME+X} ]]; then
-    __spark_pythondir="${SPARK_HOME}/python"
-    __spark_py4jfile="${SPARK_HOME}/python/lib/$(ls "${SPARK_HOME}/python/lib" | grep 'py4j.*zip' | tail -l)"
-    __spark_pysparkfile="${SPARK_HOME}/python/lib/$(ls "${SPARK_HOME}/python/lib" | grep 'pyspark.*zip' | tail -l)"
-    __spark_path_list="${__spark_pythondir}:${__spark_py4jfile}:${__spark_pysparkfile}"
-    
-    [[ "${PYTHONPATH:-NA}" == "NA" ]] && PYTHONPATH="$(which python)"
-    [[ ":${PYTHONPATH}:" != *":${__spark_path_list}:"* ]] && PYTHONPATH="${__spark_path_list}:${PYTHONPATH}"
-    export PYTHONPATH
-    # export PYSPARK_DRIVER_PYTHON="jupyter"
-    # export PYSPARK_DRIVER_PYTHON_OPTS="notebook"
-    # export PYSPARK_PYTHON=python3
 
-    unset __spark_pythondir
-    unset __spark_py4jfile
-    unset __spark_pysparkfile
-    unset __spark_path_list
-fi
+    if [[ ${SPARK_HOME+X} ]]; then
+        __spark_pythondir="${SPARK_HOME}/python"
+        __spark_py4jfile="${SPARK_HOME}/python/lib/$(ls "${SPARK_HOME}/python/lib" | grep 'py4j.*zip' | tail -l)"
+        __spark_pysparkfile="${SPARK_HOME}/python/lib/$(ls "${SPARK_HOME}/python/lib" | grep 'pyspark.*zip' | tail -l)"
+        __spark_path_list="${__spark_pythondir}:${__spark_py4jfile}:${__spark_pysparkfile}"
+        
+        #[[ "${PYTHONPATH:-NA}" == "NA" ]] && PYTHONPATH="$(which python)"
+        #[[ ":${PYTHONPATH}:" != *":${__spark_path_list}:"* ]] && PYTHONPATH="${__spark_path_list}:${PYTHONPATH}"
+        
+        [[ ":${PYTHONPATH}:" != *":${__spark_path_list}:"* ]] && PYTHONPATH="${__spark_path_list}${PYTHONPATH+:}${PYTHONPATH}"
+        export PYTHONPATH
+
+        # export PYSPARK_DRIVER_PYTHON="jupyter"
+        # export PYSPARK_DRIVER_PYTHON_OPTS="notebook"
+        # export PYSPARK_PYTHON=python3
+
+        unset __spark_pythondir
+        unset __spark_py4jfile
+        unset __spark_pysparkfile
+        unset __spark_path_list
+    fi
+
 # <<< my spark init <<<
+
+
+# <<< direnv init <<<
+
+    # Ref Url: https://github.com/direnv/direnv/wiki/Python
+    show_conda_env() {
+    if [[ -n "$CONDA_DEFAULT_ENV" ]]; then
+        echo "($(basename $CONDA_DEFAULT_ENV)) "
+    fi
+    }
+
+    export -f show_conda_env
+    # TURN OFF CONDA PROMPT CHANGE IF USING BELOW PROMPT
+    # USE THE FOLLOWING COMMAND TO TURN OFF CONDA PROMPT: conda config --set changeps1 False
+    PS1='$(show_conda_env)'$PS1
+
+    eval "$(direnv hook bash)"
+
+# <<< direnv init <<<
 
