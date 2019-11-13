@@ -115,63 +115,144 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-# added by Anaconda3 2018.12 installer
+
+
+# >>> my export init >>>
+
+    export iam="$(whoami)"
+    # export wsliam="$(whoami)"
+    # In case your user directory name under : C:/Users has different name than WSL username
+    export wsliam="Manish"
+
+    # for UNIX/LINUX machine below can be used
+    # export myhome="/home/${iam}"
+    # for WSL something like below will be used
+    export myhome="/mnt/c/Users/${wsliam}"
+
+    export mywrk="${myhome}/my-workspace"
+    [[ -d "${mywrk}" ]] || mkdir "${mywrk}"
+
+    export ZEPPELIN_HOME="/home/${iam}/tools/zeppelin/current"
+    export ZEPPELIN_PORT='8099'
+    [[ ":${PATH}:" != *":${ZEPPELIN_HOME}/bin:"* ]] && export PATH="${ZEPPELIN_HOME}/bin:${PATH}"
+
+    export CONDA_HOME="/home/${iam}/anaconda3"
+    [[ ":${PATH}:" != *":${CONDA_HOME}/bin:"* ]] && export PATH="${CONDA_HOME}/bin:${PATH}"
+    
+    # >>> wsl.conf init >>>
+        # -------------------------------------------------------------------------------------------
+        # ADD BELOW LINES(del # > from below lines and the copy) TO FILE: "/etc/wsl.conf" 
+        #                       FOR STOPPING WINDOWS PATH LIST BEING APPENDED TO WSL PATH VARIABLE:
+        # -------------------------------------------------------------------------------------------
+        # ># Ref Page Url: https://docs.microsoft.com/en-us/windows/wsl/wsl-config
+        # >[interop]
+        # ># enabled = true
+        # >appendWindowsPath = false
+
+        # Below variables of this section (until : # <<< wsl.conf init <<<) are needed only in WSL
+        # Without below PATH appends the command such as code,conde-insiders will not work
+        export VSCODE_HOME="/mnt/c/Program Files/Microsoft VS Code"
+        [[ ":${PATH}:" != *":${VSCODE_HOME}/bin:"* ]] && export PATH="${PATH}:${VSCODE_HOME}/bin"
+
+        export VSCODE_INSIDERS_HOME="/mnt/c/Program Files/Microsoft VS Code Insiders"
+        [[ ":${PATH}:" != *":${VSCODE_INSIDERS_HOME}/bin:"* ]] && export PATH="${PATH}:${VSCODE_INSIDERS_HOME}/bin"
+
+        __WINDOWS_IMPORTANT_APPEND_PATH_LIST="/mnt/c/Windows:/mnt/c/Windows/System32:/mnt/c/Users/Manish/AppData/Local/Microsoft/WindowsApps"
+        [[ ":${PATH}:" != *":${__WINDOWS_IMPORTANT_APPEND_PATH_LIST}:"* ]] && export PATH="${PATH}:${__WINDOWS_IMPORTANT_APPEND_PATH_LIST}"
+        unset __WINDOWS_IMPORTANT_APPEND_PATH_LIST
+    # <<< wsl.conf init <<<
+
+    export TERM=xterm-256color
+
+# <<< my export init <<<
+
+
+# >>> my alias init >>>
+
+    alias myhome="cd ${myhome}"
+    alias mywrk="cd ${mywrk}"
+
+    alias zepstart='zeppelin-daemon.sh start'
+    alias zepstop='zeppelin-daemon.sh stop'
+    alias zepstatus='zeppelin-daemon.sh status'
+
+    alias cdi='code-insiders .'
+
+    alias jpn='jupyter notebook'
+    alias jpl='jupyter lab'
+
+# <<< my alias init <<<
+
+
 # >>> conda init >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$(CONDA_REPORT_ERRORS=false '/home/dixitm/anaconda3/bin/conda' shell.bash hook 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    \eval "$__conda_setup"
-else
-    if [ -f "/home/dixitm/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/dixitm/anaconda3/etc/profile.d/conda.sh"
-        CONDA_CHANGEPS1=false conda activate base
+
+    # !! Contents within this block are managed by 'conda init' !!
+    __conda_setup="$("/home/${iam}/anaconda3/bin/conda" shell.bash hook 2> /dev/null)"
+    if [ $? -eq 0 ]; then
+        eval "$__conda_setup"
     else
-        \export PATH="/home/dixitm/anaconda3/bin:$PATH"
+        if [ -f "/home/${iam}/anaconda3/etc/profile.d/conda.sh" ]; then
+            . "/home/${iam}/anaconda3/etc/profile.d/conda.sh"
+        else
+            export PATH="/home/${iam}/anaconda3/bin:$PATH"
+        fi
     fi
-fi
-unset __conda_setup
+    unset __conda_setup
+
 # <<< conda init <<<
 
 
+# >>> sdkman init >>>
 
-# added by Manish to switch between multiple java versions
-# >>> java versions switch init >>>
-# ref command to install java versions:
-#   > sudo apt-get update
-#   > sudo apt-get install default-jdk
-#   > sudo apt-get install openjdk-11-jdk
-#   > sudo apt-get install openjdk-8-jdk
+    # THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+    export SDKMAN_DIR="/home/${iam}/.sdkman"
+    [[ -s "/home/${iam}/.sdkman/bin/sdkman-init.sh" ]] && source "/home/${iam}/.sdkman/bin/sdkman-init.sh"
 
-alias lsjava='sudo update-java-alternatives --list'
-alias usejava8='sudo update-java-alternatives --set /usr/lib/jvm/java-1.8.0-openjdk-amd64 && source ~/.bashrc'
-alias usejava11='sudo update-java-alternatives --set /usr/lib/jvm/java-1.11.0-openjdk-amd64 && source ~/.bashrc'
+# <<< sdkman init <<<
 
-export JAVA_HOME="$(jrunscript -e "java.lang.System.out.println(java.lang.System.getProperty('java.home'));")"
-# <<< java versions switch init <<<
 
-function add2PATH {
-  case ":$PATH:" in
-    *":$1:"*) :;; # already there
-    *) PATH="$1:$PATH";; # or PATH="$PATH:$1"
-  esac
-}
+# >>> my spark init >>>
 
-function add2PYTHONPATH {
-  case ":$PYTHONPATH:" in
-    *":$1:"*) :;; # already there
-    *) PYTHONPATH="$1:$PYTHONPATH";; # or PYTHONPATH="$PYTHONPATH:$1"
-  esac
-}
+    if [[ ${SPARK_HOME+X} ]]; then
+        __spark_pythondir="${SPARK_HOME}/python"
+        __spark_py4jfile="${SPARK_HOME}/python/lib/$(ls "${SPARK_HOME}/python/lib" | grep 'py4j.*zip' | tail -l)"
+        __spark_pysparkfile="${SPARK_HOME}/python/lib/$(ls "${SPARK_HOME}/python/lib" | grep 'pyspark.*zip' | tail -l)"
+        __spark_path_list="${__spark_pythondir}:${__spark_py4jfile}:${__spark_pysparkfile}"
+        
+        #[[ "${PYTHONPATH:-NA}" == "NA" ]] && PYTHONPATH="$(which python)"
+        #[[ ":${PYTHONPATH}:" != *":${__spark_path_list}:"* ]] && PYTHONPATH="${__spark_path_list}:${PYTHONPATH}"
+        
+        [[ ":${PYTHONPATH}:" != *":${__spark_path_list}:"* ]] && PYTHONPATH="${__spark_path_list}${PYTHONPATH+:}${PYTHONPATH}"
+        export PYTHONPATH
 
-export SPARK_HOME="/usr/bin/spark"
-export PYSPARK_DRIVER_PYTHON="jupyter"
-export PYSPARK_DRIVER_PYTHON_OPTS="notebook"
-export PYSPARK_PYTHON=python3
+        # export PYSPARK_DRIVER_PYTHON="jupyter"
+        # export PYSPARK_DRIVER_PYTHON_OPTS="notebook"
+        # export PYSPARK_PYTHON=python3
 
-if [[ "$PYTHONPATH" == "" ]]; then
-  export PYTHONPATH="$SPARK_HOME/python:$SPARK_HOME/python/build:$SPARK_HOME/python/lib/py4j-0.10.1-src.zip"
-else
-  add2PYTHONPATH "$SPARK_HOME/python:$SPARK_HOME/python/build:$SPARK_HOME/python/lib/py4j-0.10.1-src.zip"
-fi
+        unset __spark_pythondir
+        unset __spark_py4jfile
+        unset __spark_pysparkfile
+        unset __spark_path_list
+    fi
 
-add2PATH "$SPARK_HOME:$SPARK_HOME/bin:$PYTHONPATH"
+# <<< my spark init <<<
+
+
+# <<< direnv init <<<
+
+    # Ref Url: https://github.com/direnv/direnv/wiki/Python
+    show_conda_env() {
+    if [[ -n "$CONDA_DEFAULT_ENV" ]]; then
+        echo "($(basename $CONDA_DEFAULT_ENV)) "
+    fi
+    }
+
+    export -f show_conda_env
+    # TURN OFF CONDA PROMPT CHANGE IF USING BELOW PROMPT
+    # USE THE FOLLOWING COMMAND TO TURN OFF CONDA PROMPT: conda config --set changeps1 False
+    PS1='$(show_conda_env)'$PS1
+
+    eval "$(direnv hook bash)"
+
+# <<< direnv init <<<
+

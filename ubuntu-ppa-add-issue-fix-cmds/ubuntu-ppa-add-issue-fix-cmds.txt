@@ -1,0 +1,8 @@
+url: https://askubuntu.com/questions/863825/unable-to-add-ppa-in-my-newly-installed-ubuntu-16-04-lts
+
+sudo apt remove --purge ca-certificates
+sudo apt autoremove
+sudo apt install ca-certificates
+
+
+sudo apt install software-properties-common
