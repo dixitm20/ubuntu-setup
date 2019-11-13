@@ -1,0 +1,135 @@
+# Change docker image pull location
+# ref: https://medium.com/developer-space/how-to-change-docker-data-folder-configuration-33d372669056
+----------------------------------------------------------------------
+you can add the new path into /etc/docker/daemon.json file like the following.
+{
+ //...
+ "graph": "/mnt/hdd/os/docker-pull-repo/docker-pull-root-ubuntu-one",
+ //...
+}
+Update:
+graph has been deprecated in v17.05.0 .You can use data-root instead.
+{
+ //...
+ "data-root": "/mnt/ssd/fos-windows/docker-workspace/docker-pull-repo/docker-pull-root-ubuntu-one",
+ //...
+}
+
+Then call the following command to reload the changed configuration: (Special thanks to Daniel Lando for the update)
+sudo systemctl daemon-reload
+----------------------------------------------------------------------
+
+Running a local registry
+----------------------------------------------------------------------
+# use disks utility in ubuntu to mount partitions of hdd
+
+docker pull registry:2.7
+
+docker run -d   -p 5000:5000   --restart=always   --name registry   -v /mnt/hdd/data/docker-localhost-5000-registry-repo/docker-registry-root-ubuntu-one:/var/lib/registry   registry:2.7
+
+
+docker run --rm -d   -p 5000:5000  --name registry   -v /mnt/hdd/data/docker-localhost-5000-registry-repo/docker-registry-root-ubuntu-one:/var/lib/registry   registry:2.7
+----------------------------------------------------------------------
+
+
+
+Move all docker images to a local registry
+----------------------------------------------------------------------
+port to list all images of a registry: http://localhost:5000/v2/_catalog
+
+for img in $( docker images | grep -v 'localhost:5000' | grep -v '^REPOSITORY' | tr -s ' ' | cut -d ' ' -f1-2 | sed 's/ /:/g' ); do echo "docker tag $img localhost:5000/$img"; eval "docker tag $img localhost:5000/$img"; echo "docker push localhost:5000/$img"; eval "docker push localhost:5000/$img"; done
+
+# Simplified version of the above command
+for img in $( docker images | grep -v 'localhost:5000' | grep -v '^REPOSITORY' | tr -s ' ' | cut -d ' ' -f1-2 | sed 's/ /:/g' ); 
+do 
+    echo "docker tag $img localhost:5000/$img"; 
+    eval "docker tag $img localhost:5000/$img"; 
+    echo "docker push localhost:5000/$img"; 
+    eval "docker push localhost:5000/$img"; 
+done
+----------------------------------------------------------------------
+
+
+
+Docker pull list I use
+----------------------------------------------------------------------
+Command to create pull command for all images: for img in $( docker images | grep -v 'localhost:5000' | grep -v '^REPOSITORY' | tr -s ' ' | cut -d ' ' -f1-2 | sed 's/ /:/g' ); do echo "docker pull $img"; done
+
+
+docker pull golang:1.13.4
+docker pull mongo:4.2.1
+docker pull couchbase:6.0.3
+docker pull ubuntu:18.04
+docker pull cassandra:3.11.5
+docker pull docker.elastic.co/logstash/logstash:7.4.2
+docker pull flink:1.9
+docker pull docker.elastic.co/kibana/kibana:7.4.2
+docker pull jenkins/jenkins:lts
+docker pull docker.elastic.co/elasticsearch/elasticsearch:7.4.2
+docker pull python:2.7
+docker pull amazonlinux:2
+docker pull alpine:3.10.3
+docker pull neo4j:3.5.12
+docker pull storm:1.1.3
+docker pull python:3.8
+docker pull mysql:8.0.18
+docker pull postgres:12.0
+docker pull couchdb:2.3
+docker pull apache/zeppelin:0.8.2
+docker pull centos:8
+docker pull cnfldemos/kafka-connect-datagen:0.1.3-5.3.1
+docker pull confluentinc/ksql-examples:5.3.1
+docker pull confluentinc/cp-ksql-server:5.3.1
+docker pull confluentinc/cp-ksql-cli:5.3.1
+docker pull confluentinc/cp-enterprise-kafka:5.3.1
+docker pull confluentinc/cp-enterprise-control-center:5.3.1
+docker pull confluentinc/cp-schema-registry:5.3.1
+docker pull confluentinc/cp-kafka-rest:5.3.1
+docker pull confluentinc/cp-zookeeper:5.3.1
+docker pull registry:2.7
+docker pull hortonworks/sandbox-hdp:3.0.1
+docker pull hortonworks/sandbox-proxy:1.0
+docker pull store/continuumio/anaconda:4.0.0
+
+
+
+
+docker pull localhost:5000/golang:1.13.4
+docker pull localhost:5000/mongo:4.2.1
+docker pull localhost:5000/couchbase:6.0.3
+docker pull localhost:5000/ubuntu:18.04
+docker pull localhost:5000/cassandra:3.11.5
+docker pull localhost:5000/docker.elastic.co/logstash/logstash:7.4.2
+docker pull localhost:5000/flink:1.9
+docker pull localhost:5000/docker.elastic.co/kibana/kibana:7.4.2
+docker pull localhost:5000/jenkins/jenkins:lts
+docker pull localhost:5000/docker.elastic.co/elasticsearch/elasticsearch:7.4.2
+docker pull localhost:5000/python:2.7
+docker pull localhost:5000/amazonlinux:2
+docker pull localhost:5000/alpine:3.10.3
+docker pull localhost:5000/neo4j:3.5.12
+docker pull localhost:5000/storm:1.1.3
+docker pull localhost:5000/python:3.8
+docker pull localhost:5000/mysql:8.0.18
+docker pull localhost:5000/postgres:12.0
+docker pull localhost:5000/couchdb:2.3
+docker pull localhost:5000/apache/zeppelin:0.8.2
+docker pull localhost:5000/centos:8
+docker pull localhost:5000/cnfldemos/kafka-connect-datagen:0.1.3-5.3.1
+docker pull localhost:5000/confluentinc/ksql-examples:5.3.1
+docker pull localhost:5000/confluentinc/cp-ksql-server:5.3.1
+docker pull localhost:5000/confluentinc/cp-ksql-cli:5.3.1
+docker pull localhost:5000/confluentinc/cp-enterprise-kafka:5.3.1
+docker pull localhost:5000/confluentinc/cp-enterprise-control-center:5.3.1
+docker pull localhost:5000/confluentinc/cp-schema-registry:5.3.1
+docker pull localhost:5000/confluentinc/cp-kafka-rest:5.3.1
+docker pull localhost:5000/confluentinc/cp-zookeeper:5.3.1
+docker pull localhost:5000/registry:2.7
+docker pull localhost:5000/hortonworks/sandbox-hdp:3.0.1
+docker pull localhost:5000/hortonworks/sandbox-proxy:1.0
+docker pull localhost:5000/store/continuumio/anaconda:4.0.0
+----------------------------------------------------------------------
+
+docker clean ups:
+
+https://linuxize.com/post/how-to-remove-docker-images-containers-volumes-and-networks/
