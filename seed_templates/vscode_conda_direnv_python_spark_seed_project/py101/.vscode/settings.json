@@ -11,7 +11,11 @@
         "PYTHONPATH": "${env:PYTHONPATH}"
     },
 
-    "python.formatting.provider": "black",
+    "python.formatting.provider": "autopep8",
 
-    "terminal.integrated.inheritEnv": false
+    "terminal.integrated.inheritEnv": false,
+    "python.linting.pylintEnabled": false,
+    "python.linting.pycodestyleEnabled": true,
+    "python.linting.enabled": true
+
 }
