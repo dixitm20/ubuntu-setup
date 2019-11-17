@@ -132,6 +132,9 @@ fi
     export mywrk="${myhome}/my-workspace"
     [[ -d "${mywrk}" ]] || mkdir "${mywrk}"
 
+    export mygit="${myhome}/git-workspace"
+    [[ -d "${mygit}" ]] || mkdir "${mygit}"
+    
     export ZEPPELIN_HOME="/home/${iam}/tools/zeppelin/current"
     export ZEPPELIN_PORT='8099'
     [[ ":${PATH}:" != *":${ZEPPELIN_HOME}/bin:"* ]] && export PATH="${ZEPPELIN_HOME}/bin:${PATH}"
@@ -171,6 +174,7 @@ fi
 
     alias myhome="cd ${myhome}"
     alias mywrk="cd ${mywrk}"
+    alias mygit="cd ${mygit}"
 
     alias zepstart='zeppelin-daemon.sh start'
     alias zepstop='zeppelin-daemon.sh stop'
