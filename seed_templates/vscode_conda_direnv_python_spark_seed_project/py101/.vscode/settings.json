@@ -1,14 +1,21 @@
 {
     "python.pythonPath": "${env:CONDA_PREFIX}/bin/python",
-    
+
     "python.autoComplete.extraPaths": [
         "${env:SPARK_HOME}/python",
         "${env:SPARK_HOME}/python/pyspark"
     ],
-
-    //"python.envFile": "${workspaceFolder}/.env"
+    
 
     "terminal.integrated.env.linux": {
         "PYTHONPATH": "${env:PYTHONPATH}"
-    }
+    },
+
+    "python.formatting.provider": "autopep8",
+
+    "terminal.integrated.inheritEnv": false,
+    "python.linting.pylintEnabled": false,
+    "python.linting.pycodestyleEnabled": true,
+    "python.linting.enabled": true
+
 }
